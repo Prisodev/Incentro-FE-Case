@@ -25,6 +25,7 @@ export default function Form() {
 
   useEffect(() => {
     const elem = document.getElementById("adres");
+
     if (huisnummer && postcode.length >= 6) {
       setUrl(
         `https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q=${postcode} ${huisnummer}`
@@ -76,13 +77,16 @@ export default function Form() {
   useEffect(() => {
     var filter = /^([a-zA-Z0-9.-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
     if (email.length >= 1) {
-      if (!filter.test(email)) {
-        btn.setAttribute("disabled", true);
-      } else {
-        btn.removeAttribute("disabled");
-      }
+      try {
+        if (!filter.test(email)) {
+          btn.createAttribute("disabled");
+          btn.value = true;
+        } else {
+          btn.removeAttribute("disabled");
+        }
+      } catch (error) {}
     }
-  }, [email, setError, btn]);
+  }, [email, btn]);
 
   return (
     <>
