@@ -59,6 +59,10 @@ button {
     text-decoration: none;
 }
 
+button:disabled {
+    opacity: 30%;
+}
+
 .incentro {
     color: white;
     font-size: 1rem;

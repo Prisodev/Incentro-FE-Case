@@ -21,12 +21,11 @@ export default function Form() {
     history.push("/submit");
   };
 
-  const { data: address, isPending, error } = useFetch(url, { type: "GET" });
+  const { data: address, isPending, error, setError } = useFetch(url, "GET");
 
   useEffect(() => {
     const elem = document.getElementById("adres");
     if (huisnummer && postcode.length >= 6) {
-      console.log(huisnummer, url);
       setUrl(
         `https://geodata.nationaalgeoregister.nl/locatieserver/v3/suggest?q=${postcode} ${huisnummer}`
       );
@@ -72,23 +71,18 @@ export default function Form() {
     }
   }, [huisnummer, postcode, address, url]);
 
+  const btn = document.getElementById("btn");
+
   useEffect(() => {
     var filter = /^([a-zA-Z0-9.-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-
-    const elem = document.getElementById("email");
-    const btn = document.getElementById("submit");
-
     if (email.length >= 1) {
       if (!filter.test(email)) {
-        btn.classList.add("hidden");
+        btn.setAttribute("disabled", true);
       } else {
-        btn.classList.remove("hidden");
+        btn.removeAttribute("disabled");
       }
-    } else {
-      elem.classList.remove("error");
-      elem.classList.remove("valid");
     }
-  }, [email]);
+  }, [email, setError, btn]);
 
   return (
     <>
@@ -104,6 +98,7 @@ export default function Form() {
               <span>Voorletter(s):</span>
               <input
                 type='text'
+                required
                 onChange={(e) => setVoorletters(e.target.value)}
                 value={voorletters}
               />
@@ -121,6 +116,7 @@ export default function Form() {
             <span>Achternaam:</span>
             <input
               type='text'
+              required
               onChange={(e) => setAchternaam(e.target.value)}
               value={achternaam}
             />
@@ -130,6 +126,7 @@ export default function Form() {
               <span>Postcode:</span>
               <input
                 type='text'
+                required
                 onChange={(e) => {
                   setPostcode(
                     e.target.value.replace(/\s+|\W+|[-_]/g, "").toUpperCase()
@@ -143,6 +140,7 @@ export default function Form() {
               <span>Huisnummer:</span>
               <input
                 type='text'
+                required
                 onChange={(e) => {
                   sethuisnummer(
                     e.target.value.replace(/\s+|\W+|[-_]/g, "").toUpperCase()
@@ -157,6 +155,7 @@ export default function Form() {
               <span>Straatnaam:</span>
               <input
                 type='text'
+                required
                 onChange={(e) => {
                   setStraatnaam(e.target.value);
                 }}
@@ -168,6 +167,7 @@ export default function Form() {
               <span>Woonplaats:</span>
               <input
                 type='text'
+                required
                 onChange={(e) => {
                   setWoonplaats(e.target.value);
                 }}
@@ -182,6 +182,7 @@ export default function Form() {
             <input
               id='email'
               type='email'
+              required
               onChange={(e) => {
                 setEmail(e.target.value);
               }}
@@ -189,7 +190,7 @@ export default function Form() {
           </label>
           {!isPending && (
             <>
-              <button className='btn hidden' id='submit'>
+              <button className='btn' id='btn' disabled>
                 Inschrijven
               </button>
             </>
