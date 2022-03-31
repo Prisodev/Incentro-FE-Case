@@ -1,0 +1,23 @@
+ div.endgame {
+     background: #fe5000;
+     color: #FFF;
+     width: 100%;
+     height: 100vh;
+
+     font-weight: 600;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+ }
+
+ p.large {
+     position: absolute;
+     font-size: xx-large;
+     top: 30%
+ }
+
+ p.small {
+     position: absolute;
+     font-size: small;
+     bottom: 10px
+ }
