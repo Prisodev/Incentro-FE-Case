@@ -10,6 +10,7 @@ export default function Form() {
   const [achternaam, setAchternaam] = useState("");
   const [postcode, setPostcode] = useState("");
   const [huisnummer, sethuisnummer] = useState("");
+  const [disable, setDisable] = useState(false);
 
   const [straatnaam, setStraatnaam] = useState("");
   const [woonplaats, setWoonplaats] = useState("");
@@ -21,7 +22,7 @@ export default function Form() {
     history.push("/submit");
   };
 
-  const { data: address, isPending, error, setError } = useFetch(url, "GET");
+  const { data: address, isPending, error } = useFetch(url, "GET");
 
   useEffect(() => {
     const elem = document.getElementById("adres");
@@ -70,23 +71,28 @@ export default function Form() {
       setStraatnaam("");
       setWoonplaats("");
     }
-  }, [huisnummer, postcode, address, url]);
-
-  const btn = document.getElementById("btn");
+  }, [huisnummer, postcode, address, url, disable]);
 
   useEffect(() => {
-    var filter = /^([a-zA-Z0-9.-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
-    if (email.length >= 1) {
-      try {
+    try {
+      var filter = /^([a-zA-Z0-9.-])+@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+      if (email.length >= 1) {
         if (!filter.test(email)) {
-          btn.createAttribute("disabled");
-          btn.value = true;
+          setDisable(true);
         } else {
-          btn.removeAttribute("disabled");
+          setDisable(false);
         }
-      } catch (error) {}
+      } else {
+        setDisable(true);
+      }
+
+      if (woonplaats === "" || voorletters === "" || achternaam === "") {
+        setDisable(true);
+      }
+    } catch (error) {
+      console.log(error.message);
     }
-  }, [email, btn]);
+  }, [email, woonplaats, voorletters, achternaam]);
 
   return (
     <>
@@ -143,7 +149,7 @@ export default function Form() {
             <label>
               <span>Huisnummer:</span>
               <input
-                type='text'
+                type='number'
                 required
                 onChange={(e) => {
                   sethuisnummer(
@@ -170,6 +176,7 @@ export default function Form() {
             <label>
               <span>Woonplaats:</span>
               <input
+                id='city'
                 type='text'
                 required
                 onChange={(e) => {
@@ -192,13 +199,17 @@ export default function Form() {
               }}
             />
           </label>
-          {!isPending && (
-            <>
-              <button className='btn' id='btn' disabled>
-                Inschrijven
-              </button>
-            </>
+          {disable && (
+            <button className='btn ' id='btn' disabled>
+              Inschrijven
+            </button>
           )}
+          {!disable && (
+            <button className='btn' id='btn'>
+              Inschrijven
+            </button>
+          )}
+
           {isPending && <p>loading</p>}
           {error && <p>{error}</p>}
         </form>
